@@ -1,0 +1,108 @@
+<!doctype html>
+
+<html ng-app="busapp">
+
+<head>
+	<meta charset="utf-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bus Booking</title>
+
+<!-- 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+<!--	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script> -->
+
+		<link rel="stylesheet" type="text/css" href="bootstrap.min.css"></link>
+		<script src="angular.min.js"></script> 
+		<script src="angular-ui-router.min.js"></script> 
+
+	<script src="js/controllers/main.js"></script>
+	<script src="js/services/bookings.js"></script> 
+	<script src="js/core.js"></script> 
+</head>
+
+<body>
+
+	<div class="container" ng-controller="mainController">
+
+		<div class="text-center text-muted bg-primary">
+			<p><h3>Bus Booking</h3></p>
+		</div>	
+		<br>
+		<form novalidate>
+			<table width='100%'>
+				<tr>
+					<td>Source: <select ng-model="search.source" ng-options="src as src.name for src in sourceList">
+								</select>
+					</td>
+					<td>Destination: <select ng-model="search.destination" ng-options="dest as dest.name for dest in destinationList">
+								</select>
+					</td>
+					<td>Date: <input type="date" ng-model="search.date" /></td>
+					<td><button ng-click="searchTickets()">Search</button></td>
+				</tr>
+			</table>
+		</form>
+		<br><br>
+
+		<table class="table table-hover" ng-show='showSearchResults'>
+			<tr>
+				<td><label>Travels</label></td>
+				<td><label>Source</label></td>
+				<td><label>Destination</label></td>
+				<td><label>Fare</label></td>
+				<td><label>Available Seats</label></td>
+			</tr>
+			<tr ng-repeat="r in searchResults" ng-click="selectBus()">
+				<td> {{ r.travels }}</td>
+				<td> {{ r.source }}</td>
+				<td> {{ r.destination }}</td>
+				<td> {{ r.fare }}</td>
+				<td> {{ r.seats }}</td>
+			</tr>
+		</table>
+		<br>		
+
+		<form novalidate ng-show='showBusDetails'>
+			<table width='100%'>
+				<tr>
+					<td>Selected Bus : <label>{{selectedBus.source}} -> {{selectedBus.destination}} , {{selectedBus.travels}} , {{selectedBus.date}} </label></td>
+				</tr>
+				<tr><td>&nbsp;</td></tr>
+				<tr>
+					<td>Number of seats to book: <input type="text" ng-model="bookingDetils.noOfSeats" /></td>
+					<td>Name: <input type="text" ng-model="bookingDetils.name" /></td>
+					<td>Mobile: <input type="text" ng-model="bookingDetils.mobile" /></td>
+					<td><label>Total Rs. {{selectedBus.fare * bookingDetils.noOfSeats}}</label></td>
+					<td><button ng-click="bookTickets()">Book</button></td>
+				</tr>
+			</table>
+		</form>		
+
+		<table  width='100%' ng-show="showConfirmation">
+			<tr>
+				<td><label>Successfully booked {{bookingDetils.noOfSeats}} ticket(s) for {{bookingDetils.name}} :: 
+					{{selectedBus.source}} -> {{selectedBus.destination}} , {{selectedBus.travels}} , {{selectedBus.date}} </label> 
+					&nbsp;&nbsp;<button ng-click="getBusBookings()">View all bookings in this bus</button>
+				</td>
+			</tr>
+		</table>
+		<br>
+
+		<table class="table" ng-show='selectedBus.showBookings'>
+			<tr><td colspan='3'>Current bookings in this bus -> </td></tr>
+			<tr>
+				<td><label>Name</label></td>
+				<td><label>Mobile</label></td>
+				<td><label>No. of seats booked</label></td>
+			</tr>
+			<tr ng-repeat="b in selectedBus.bookings">
+				<td> {{ b.name }}</td>
+				<td> {{ b.mobile }}</td>
+				<td> {{ b.seats }}</td>
+			</tr>
+		</table>
+
+	</div>
+
+</body>
+
+</html>
